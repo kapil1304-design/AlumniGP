@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CrossRoads | Alumni & Life Network</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <nav class="topbar" aria-label="Primary navigation">
+        <a class="brand" href="#top" aria-label="CrossRoads home">
+          <span class="brand-mark" aria-hidden="true">
+            <span></span><span></span><span></span><span></span>
+          </span>
+          <span>CrossRoads</span>
+        </a>
+        <div class="nav-links">
+          <a href="#circles">Circles</a>
+          <a href="#trust">Trust</a>
+          <a href="#explore">Explore</a>
+        </div>
+        <button class="ghost-button" data-scroll-target="app">Open app</button>
+      </nav>
+
+      <main id="top">
+        <section class="hero">
+          <div class="hero-copy">
+            <div class="eyebrow">For people whose paths once crossed</div>
+            <h1>Your old world, alive again.</h1>
+            <p>
+              Reconnect with classmates, batchmates, colleagues, and forgotten allies.
+              Find help, build teams, create opportunities, and stay close through every phase of life.
+            </p>
+            <div class="hero-actions">
+              <button class="primary-button" data-scroll-target="app">Start your circle</button>
+              <button class="secondary-button" data-scroll-target="circles">Explore the idea</button>
+            </div>
+            <div class="name-strip" aria-label="Name ideas">
+              <span>CrossRoads</span>
+              <span>Again</span>
+              <span>PastLink</span>
+              <span>TribeTrail</span>
+            </div>
+          </div>
+
+          <div class="hero-visual" aria-label="Animated alumni network preview">
+            <canvas id="networkCanvas" width="760" height="620">Animated preview of connected alumni circles.</canvas>
+            <div class="phone-card">
+              <div class="phone-top">
+                <span class="avatar a1"></span>
+                <div>
+                  <strong>IIT Bombay 2018</strong>
+                  <small>42 verified members active</small>
+                </div>
+              </div>
+              <div class="pulse-list">
+                <div><span></span> Aarav replied to a referral request</div>
+                <div><span></span> Meera created a Delhi reunion</div>
+                <div><span></span> Zoya vouched for a batchmate</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="ticker" aria-label="Life use cases">
+          <span>Jobs</span>
+          <span>Mentors</span>
+          <span>Business</span>
+          <span>Teams</span>
+          <span>Reunions</span>
+          <span>Referrals</span>
+          <span>Support</span>
+          <span>Friendship</span>
+        </section>
+
+        <section class="prototype-app" id="app" aria-label="CrossRoads app prototype">
+          <div class="app-intro">
+            <span class="eyebrow">Clickable prototype</span>
+            <h2>Enter, build your profile, find your people.</h2>
+            <p>
+              This is a frontend simulation of the core flow: login, create profile,
+              auto-discover likely groups, create missing groups, and send a joining request.
+            </p>
+          </div>
+
+          <div class="flow-grid">
+            <section class="flow-card auth-card">
+              <div class="step-pill">1</div>
+              <h3>Login</h3>
+              <p>Use any email for this prototype. OTP is simulated.</p>
+              <form id="loginForm" class="form-stack">
+                <label>
+                  Email
+                  <input id="loginEmail" type="email" placeholder="you@example.com" required />
+                </label>
+                <label>
+                  OTP
+                  <input id="loginOtp" type="text" placeholder="123456" maxlength="6" required />
+                </label>
+                <button class="primary-button" type="submit">Login</button>
+              </form>
+              <div class="status-line" id="loginStatus">Not logged in</div>
+            </section>
+
+            <section class="flow-card profile-card">
+              <div class="step-pill">2</div>
+              <h3>Create profile</h3>
+              <p>Build identity once. CrossRoads suggests or creates likely circles from your past.</p>
+              <form id="profileForm" class="profile-wizard">
+                <div class="wizard-progress" aria-label="Profile stages">
+                  <span class="active">Identity</span>
+                  <span>Location</span>
+                  <span>School</span>
+                  <span>College</span>
+                  <span>Work</span>
+                  <span>Photos</span>
+                </div>
+
+                <fieldset class="wizard-step active" data-step="0">
+                  <legend>Identity</legend>
+                  <div class="form-grid">
+                    <label>Full name <input id="profileName" type="text" placeholder="Kapil Sharma" required /></label>
+                    <label>Date of birth <input id="profileDob" type="date" required /></label>
+                    <label>
+                      Life stage
+                      <select id="profileStage" required>
+                        <option value="school-student">School student</option>
+                        <option value="college-student">College student</option>
+                        <option value="alumni">Alumni / passed out</option>
+                        <option value="professional">Working professional</option>
+                      </select>
+                    </label>
+                    <label>Current role <input id="profileRole" type="text" placeholder="Class 10 student / B.Tech student / Founder" required /></label>
+                    <label>Skills <input id="profileSkills" type="text" placeholder="Sales, AI, Operations" /></label>
+                    <label>Best friend's name <input id="profileBestFriend" type="text" placeholder="Amit / Neha / Sameer" /></label>
+                  </div>
+                </fieldset>
+
+                <fieldset class="wizard-step" data-step="1">
+                  <legend>Current Location</legend>
+                  <div class="form-grid">
+                    <label>Current country <input id="profileCountry" type="text" placeholder="India / United States" list="countryOptions" /></label>
+                    <label>Current state <input id="profileState" type="text" placeholder="Delhi / Maharashtra / California" /></label>
+                    <label>Current city <input id="profileCity" type="text" placeholder="Delhi" list="cityOptions" required /></label>
+                    <label>Current locality <input id="profileLocality" type="text" placeholder="Rajouri Garden / Bandra" /></label>
+                  </div>
+                </fieldset>
+
+                <fieldset class="wizard-step" data-step="2">
+                  <legend>School</legend>
+                  <div class="form-grid">
+                    <label>School name <input id="profileSchool" type="text" placeholder="St. Xavier's School" list="schoolOptions" autocomplete="off" /></label>
+                    <label>
+                      School class / batch
+                      <select id="profileSchoolBatch">
+                        <option value="">Select class or batch</option>
+                        <option>Class 1</option><option>Class 2</option><option>Class 3</option><option>Class 4</option>
+                        <option>Class 5</option><option>Class 6</option><option>Class 7</option><option>Class 8</option>
+                        <option>Class 9</option><option>Class 10</option><option>Class 11</option><option>Class 12</option>
+                        <option>Passed out 2026</option><option>Passed out 2025</option><option>Passed out 2024</option>
+                        <option>Passed out 2023</option><option>Passed out 2022</option>
+                      </select>
+                    </label>
+                    <label>School country <input id="profileSchoolCountry" type="text" placeholder="India" list="countryOptions" /></label>
+                    <label>School state <input id="profileSchoolState" type="text" placeholder="Delhi / Bihar / Rajasthan" /></label>
+                    <label>School city <input id="profileSchoolCity" type="text" placeholder="Patna / Delhi / Jaipur" list="cityOptions" /></label>
+                    <label>School locality / branch <input id="profileSchoolLocality" type="text" placeholder="RK Puram / Vasant Kunj / Boring Road" /></label>
+                  </div>
+                </fieldset>
+
+                <fieldset class="wizard-step" data-step="3">
+                  <legend>College</legend>
+                  <div class="form-grid">
+                    <label>College name <input id="profileCollege" type="text" placeholder="IIT Bombay" list="collegeOptions" autocomplete="off" /></label>
+                    <label>College batch <input id="profileCollegeBatch" type="text" placeholder="2018" /></label>
+                    <label>College country <input id="profileCollegeCountry" type="text" placeholder="India" list="countryOptions" /></label>
+                    <label>College state <input id="profileCollegeState" type="text" placeholder="Maharashtra / Delhi" /></label>
+                    <label>College city <input id="profileCollegeCity" type="text" placeholder="Mumbai / Pune / Bengaluru" list="cityOptions" /></label>
+                    <label>College locality / campus <input id="profileCollegeLocality" type="text" placeholder="Powai / South Campus / Main campus" /></label>
+                  </div>
+                </fieldset>
+
+                <fieldset class="wizard-step" data-step="4">
+                  <legend>Work</legend>
+                  <div class="form-grid">
+                    <label>Workplace <input id="profileWorkplace" type="text" placeholder="Infosys Pune" list="companyOptions" autocomplete="off" /></label>
+                    <label>Work batch / years <input id="profileWorkBatch" type="text" placeholder="2019" /></label>
+                    <label>Workplace country <input id="profileWorkCountry" type="text" placeholder="India" list="countryOptions" /></label>
+                    <label>Workplace state <input id="profileWorkState" type="text" placeholder="Maharashtra / Haryana" /></label>
+                    <label>Workplace city <input id="profileWorkCity" type="text" placeholder="Pune / Hyderabad / Gurgaon" list="cityOptions" /></label>
+                    <label>Workplace locality / office <input id="profileWorkLocality" type="text" placeholder="Hinjewadi Phase 2 / Cyber City" /></label>
+                  </div>
+                </fieldset>
+
+                <fieldset class="wizard-step" data-step="5">
+                  <legend>Photos & Bio</legend>
+                  <div class="form-grid">
+                    <label>Current photo <input id="profileCurrentPhoto" type="file" accept="image/*" /></label>
+                    <label>School days photo <input id="profileSchoolPhoto" type="file" accept="image/*" /></label>
+                    <label>College days photo <input id="profileCollegePhoto" type="file" accept="image/*" /></label>
+                    <label class="wide">Short bio <textarea id="profileBio" placeholder="What do you want old classmates or colleagues to know?"></textarea></label>
+                  </div>
+                </fieldset>
+
+                <div class="wizard-actions">
+                  <button class="secondary-button" id="profileBack" type="button">Back</button>
+                  <button class="primary-button" id="profileNext" type="button">Next</button>
+                  <button class="primary-button" id="profileSubmit" type="submit">Save profile & find my groups</button>
+                </div>
+              </form>
+              <datalist id="schoolOptions"></datalist>
+              <datalist id="collegeOptions"></datalist>
+              <datalist id="companyOptions"></datalist>
+              <datalist id="cityOptions"></datalist>
+              <div class="mini-profile" id="profilePreview">
+                <span class="avatar a2"></span>
+                <div>
+                  <strong>Profile not created</strong>
+                  <small>Complete this before joining a group</small>
+                </div>
+              </div>
+              <div class="recommendation-list" id="recommendationList"></div>
+            </section>
+
+            <section class="flow-card group-card">
+              <div class="step-pill">3</div>
+              <h3>Create new group</h3>
+              <p>If your school, college, workplace, or batch is missing, start it.</p>
+              <form id="createGroupForm" class="form-grid">
+                <label>
+                  Institute / workplace
+                  <input id="groupInstitute" type="text" placeholder="St. Xavier's School" list="allOrgOptions" required />
+                </label>
+                <label>
+                  Batch / period
+                  <input id="groupBatch" type="text" placeholder="2012" required />
+                </label>
+                <label class="wide">
+                  Locality, city, state, country
+                  <input id="groupLocality" type="text" placeholder="RK Puram / Powai / Hinjewadi" />
+                  <input id="groupCity" type="text" placeholder="Delhi / Mumbai / Pune" list="cityOptions" />
+                  <input id="groupState" type="text" placeholder="Delhi / Maharashtra / Karnataka" />
+                  <input id="groupCountry" type="text" placeholder="India / United States / UAE" list="countryOptions" />
+                </label>
+                <label class="wide">
+                  Invite second member
+                  <input id="groupInvite" type="email" placeholder="friend@example.com" />
+                </label>
+                <button class="primary-button wide" type="submit">Create group</button>
+              </form>
+              <datalist id="allOrgOptions"></datalist>
+              <datalist id="countryOptions"></datalist>
+              <div class="status-line" id="groupCreateStatus">Creator becomes first member, not admin.</div>
+            </section>
+
+            <section class="flow-card find-card">
+              <div class="step-pill">4</div>
+              <h3>Find group</h3>
+              <p>Search manually or use auto-recommended groups from your saved profile. Existing members must nod before access opens.</p>
+              <div class="search-row">
+                <input id="groupSearch" type="search" placeholder="Search school, college, company, batch..." />
+                <button class="secondary-button" id="clearSearch" type="button">Clear</button>
+              </div>
+              <div class="group-results" id="groupResults"></div>
+              <button class="ghost-button reset-button" id="resetPrototype" type="button">Reset demo data</button>
+            </section>
+
+            <section class="flow-card requests-card">
+              <div class="step-pill">5</div>
+              <h3>Joining requests</h3>
+              <p>Requests stay pending until enough existing members approve.</p>
+              <div class="request-list" id="requestList"></div>
+            </section>
+          </div>
+        </section>
+
+        <section class="workspace" id="circles">
+          <aside class="sidebar">
+            <div class="side-title">My circles</div>
+            <button class="circle active">
+              <span class="dot mint"></span>
+              <span>
+                <strong>St. Xavier's 2012</strong>
+                <small>Home circle</small>
+              </span>
+            </button>
+            <button class="circle">
+              <span class="dot coral"></span>
+              <span>
+                <strong>Infosys Pune 2019</strong>
+                <small>Work circle</small>
+              </span>
+            </button>
+            <button class="circle">
+              <span class="dot ink"></span>
+              <span>
+                <strong>MBA Founders</strong>
+                <small>Micro circle</small>
+              </span>
+            </button>
+          </aside>
+
+          <section class="feed-panel">
+            <div class="panel-head">
+              <div>
+                <h2>St. Xavier's 2012</h2>
+                <p>Verified people, real context, zero noise.</p>
+              </div>
+              <button class="icon-button" aria-label="Invite">+</button>
+            </div>
+
+            <div class="composer">
+              <span class="avatar a2"></span>
+              <input value="Who can help with a product designer referral in Bengaluru?" aria-label="Post update" />
+            </div>
+
+            <article class="post">
+              <div class="post-head">
+                <span class="avatar a3"></span>
+                <div>
+                  <strong>Nisha Rao</strong>
+                  <small>Product Lead at NovaPay · verified by 8</small>
+                </div>
+              </div>
+              <p>Hiring two founding engineers. Prefer someone from our circle or a trusted referral.</p>
+              <div class="chips">
+                <span>Startup</span>
+                <span>Hiring</span>
+                <span>Bengaluru</span>
+              </div>
+            </article>
+
+            <article class="post compact">
+              <strong>Delhi winter reunion</strong>
+              <span>24 going · 8 maybe · Saturday, 7 PM</span>
+              <button>RSVP</button>
+            </article>
+          </section>
+
+          <aside class="right-panel" id="trust">
+            <h2>Trust layer</h2>
+            <div class="trust-card">
+              <strong>Invite locked</strong>
+              <p>OTP goes only to the invited email or phone.</p>
+            </div>
+            <div class="trust-card">
+              <strong>Peer vouched</strong>
+              <p>3 approvals after a circle has enough members.</p>
+            </div>
+              <div class="trust-card">
+                <strong>Admin by platform only</strong>
+                <p>Warnings and removals stay with the owner/admin.</p>
+              </div>
+              <div class="trust-card">
+                <strong>Student-safe journey</strong>
+                <p>School and college students can join only relevant circles now; future fields stay optional.</p>
+              </div>
+            </aside>
+        </section>
+
+        <section class="explore" id="explore">
+          <div>
+            <h2>Reach outside your circle with intent.</h2>
+            <p>No bulk DMs, no recruiters, no paid ranking. Just deliberate contact when there is a real reason.</p>
+          </div>
+          <div class="unlock-card">
+            <span>External circle</span>
+            <strong>IIT Delhi 2020 · Product + AI</strong>
+            <p>Preview is free. Full profile + first message uses a contact pack.</p>
+            <button class="primary-button">Unlock 3 contacts</button>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script src="./app-config.js"></script>
+    <script src="./script.js"></script>
+  </body>
+</html>
