@@ -86,6 +86,26 @@ Tags refine identity without splitting the circle:
 
 Tags are **filters**, not walls. Someone in your batch searching "CSE alumni" simply narrows the view — they do not enter a separate circle.
 
+### 4.2.1 School attendance-range model
+
+Schools are not modeled only by Class 12 pass-out year. Many people leave a school before Class 12 while still having classmates and schoolmates from overlapping years.
+
+For school affiliations, members provide:
+
+- School name
+- Branch/locality, city, state, country
+- Joined class and joined year
+- Left/passed class and left/passed year
+
+The common school circle is keyed by school + branch/locality + city, not by Class 12 batch alone. Attendance years are stored as membership metadata. This allows the platform to recommend:
+
+- Same school branch community
+- People with overlapping attendance years
+- People likely from the same progression cohort
+- People from nearby classes who were present at the same time
+
+Example: a member who left after Class 7 in 1985 and another who left after Class 8 in 1986 may still be treated as close schoolmates if their attendance ranges overlap. A Class 12 pass-out from another year can also belong to the same school branch community, while finer recommendations are ranked by overlap.
+
 ### 4.3 Optional user-created micro-circles
 
 Any member of a home circle can create a **micro-circle** for a closer circle: e.g., `IIT Bombay CSE 2018`, `IIT Bombay Robotics Alumni 2015-2020`, `Delhi HQ 2020-2023 Marketing Team`.

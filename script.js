@@ -197,9 +197,22 @@ function buildGroupId(institute, batch, city = "", locality = "") {
   return [institute, batch, city, locality].filter(Boolean).map(slugify).join("-");
 }
 
+function buildSchoolCommunityId(institute, city = "", locality = "") {
+  return [institute, "school-community", city, locality].filter(Boolean).map(slugify).join("-");
+}
+
 function groupTitle(group) {
   const place = [group.locality, group.city].filter(Boolean).join(", ");
   return `${group.institute}${place ? `, ${place}` : ""} · ${group.batch}`;
+}
+
+function schoolAttendanceLabel(profile) {
+  const start = [profile.schoolFromClass, profile.schoolFromYear].filter(Boolean).join(" in ");
+  const end = [profile.schoolToClass, profile.schoolToYear].filter(Boolean).join(" in ");
+  if (start && end) return `${start} to ${end}`;
+  if (end) return `left/passed ${end}`;
+  if (start) return `joined ${start}`;
+  return "school attendance range can be added later";
 }
 
 function buildAffiliations(profile) {
@@ -207,12 +220,17 @@ function buildAffiliations(profile) {
     {
       type: "School",
       institute: profile.school,
-      batch: profile.schoolBatch,
+      batch: "All years",
       city: profile.schoolCity,
       locality: profile.schoolLocality,
       state: profile.schoolState,
       country: profile.schoolCountry,
-      signal: profile.bestFriend ? `Best friend signal: ${profile.bestFriend}` : "School, city, and batch matched from profile",
+      communityGroup: true,
+      fromClass: profile.schoolFromClass,
+      fromYear: profile.schoolFromYear,
+      toClass: profile.schoolToClass,
+      toYear: profile.schoolToYear,
+      signal: `${schoolAttendanceLabel(profile)} · common school group${profile.bestFriend ? ` · friend signal: ${profile.bestFriend}` : ""}`,
     },
     {
       type: "College",
@@ -473,7 +491,9 @@ function upsertProfileGroups(profile) {
   const recommendations = [];
 
   affiliations.forEach((affiliation) => {
-    const id = buildGroupId(affiliation.institute, affiliation.batch, affiliation.city, affiliation.locality);
+    const id = affiliation.communityGroup
+      ? buildSchoolCommunityId(affiliation.institute, affiliation.city, affiliation.locality)
+      : buildGroupId(affiliation.institute, affiliation.batch, affiliation.city, affiliation.locality);
     let group = state.groups.find((item) => item.id === id);
     let autoCreated = false;
 
@@ -486,6 +506,7 @@ function upsertProfileGroups(profile) {
         locality: affiliation.locality,
         state: affiliation.state,
         country: affiliation.country,
+        communityGroup: Boolean(affiliation.communityGroup),
         type: affiliation.type,
         members: 1,
         approvalsRequired: 1,
@@ -782,7 +803,10 @@ document.getElementById("profileForm")?.addEventListener("submit", async (event)
     skills: document.getElementById("profileSkills").value.trim(),
     bestFriend: document.getElementById("profileBestFriend").value.trim(),
     school: document.getElementById("profileSchool").value.trim(),
-    schoolBatch: document.getElementById("profileSchoolBatch").value.trim(),
+    schoolFromClass: document.getElementById("profileSchoolFromClass").value.trim(),
+    schoolFromYear: document.getElementById("profileSchoolFromYear").value.trim(),
+    schoolToClass: document.getElementById("profileSchoolToClass").value.trim(),
+    schoolToYear: document.getElementById("profileSchoolToYear").value.trim(),
     schoolCity: document.getElementById("profileSchoolCity").value.trim(),
     schoolLocality: document.getElementById("profileSchoolLocality").value.trim(),
     schoolState: document.getElementById("profileSchoolState").value.trim(),

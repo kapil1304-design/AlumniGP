@@ -152,19 +152,29 @@
 
                 <fieldset class="wizard-step" data-step="2">
                   <legend>School</legend>
+                  <p class="step-note">Add the years you actually attended. Even if you left before Class 12, you join the common school branch group and can later discover people whose school years overlapped with yours.</p>
                   <div class="form-grid">
                     <label>School name <input id="profileSchool" type="text" placeholder="St. Xavier's School" list="schoolOptions" autocomplete="off" /></label>
                     <label>
-                      School class / batch
-                      <select id="profileSchoolBatch">
-                        <option value="">Select class or batch</option>
+                      Joined in class
+                      <select id="profileSchoolFromClass">
+                        <option value="">Select class</option>
                         <option>Class 1</option><option>Class 2</option><option>Class 3</option><option>Class 4</option>
                         <option>Class 5</option><option>Class 6</option><option>Class 7</option><option>Class 8</option>
                         <option>Class 9</option><option>Class 10</option><option>Class 11</option><option>Class 12</option>
-                        <option>Passed out 2026</option><option>Passed out 2025</option><option>Passed out 2024</option>
-                        <option>Passed out 2023</option><option>Passed out 2022</option>
                       </select>
                     </label>
+                    <label>Joined year <input id="profileSchoolFromYear" type="number" min="1900" max="2100" placeholder="1979" /></label>
+                    <label>
+                      Left / passed class
+                      <select id="profileSchoolToClass">
+                        <option value="">Select class</option>
+                        <option>Class 1</option><option>Class 2</option><option>Class 3</option><option>Class 4</option>
+                        <option>Class 5</option><option>Class 6</option><option>Class 7</option><option>Class 8</option>
+                        <option>Class 9</option><option>Class 10</option><option>Class 11</option><option>Class 12</option>
+                      </select>
+                    </label>
+                    <label>Left / passed year <input id="profileSchoolToYear" type="number" min="1900" max="2100" placeholder="1985" /></label>
                     <label>School country <input id="profileSchoolCountry" type="text" placeholder="India" /></label>
                     <label>School state <input id="profileSchoolState" type="text" placeholder="Delhi / Bihar / Rajasthan" /></label>
                     <label>School city <input id="profileSchoolCity" type="text" placeholder="Patna / Delhi / Jaipur" /></label>
