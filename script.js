@@ -172,6 +172,7 @@ const initialState = {
 
 let state = loadState();
 let profileStep = 0;
+let editingProfile = false;
 
 function loadState() {
   try {
@@ -540,6 +541,50 @@ function setStatus(element, message, isWarning = false) {
   element.classList.toggle("warn", isWarning);
 }
 
+function setFieldValue(id, value = "") {
+  const field = document.getElementById(id);
+  if (field && field.type !== "file") field.value = value || "";
+}
+
+function prefillProfileForm() {
+  if (!state.profile) return;
+  const fields = {
+    profileName: state.profile.name,
+    profileDob: state.profile.dob,
+    profileStage: state.profile.stage,
+    profileRole: state.profile.role,
+    profileSkills: state.profile.skills,
+    profileBestFriend: state.profile.bestFriend,
+    profileCountry: state.profile.country,
+    profileState: state.profile.state,
+    profileCity: state.profile.city,
+    profileLocality: state.profile.locality,
+    profileSchool: state.profile.school,
+    profileSchoolFromClass: state.profile.schoolFromClass,
+    profileSchoolFromYear: state.profile.schoolFromYear,
+    profileSchoolToClass: state.profile.schoolToClass,
+    profileSchoolToYear: state.profile.schoolToYear,
+    profileSchoolCountry: state.profile.schoolCountry,
+    profileSchoolState: state.profile.schoolState,
+    profileSchoolCity: state.profile.schoolCity,
+    profileSchoolLocality: state.profile.schoolLocality,
+    profileCollege: state.profile.college,
+    profileCollegeBatch: state.profile.collegeBatch,
+    profileCollegeCountry: state.profile.collegeCountry,
+    profileCollegeState: state.profile.collegeState,
+    profileCollegeCity: state.profile.collegeCity,
+    profileCollegeLocality: state.profile.collegeLocality,
+    profileWorkplace: state.profile.workplace,
+    profileWorkBatch: state.profile.workBatch,
+    profileWorkCountry: state.profile.workCountry,
+    profileWorkState: state.profile.workState,
+    profileWorkCity: state.profile.workCity,
+    profileWorkLocality: state.profile.workLocality,
+    profileBio: state.profile.bio,
+  };
+  Object.entries(fields).forEach(([id, value]) => setFieldValue(id, value));
+}
+
 function renderLogin() {
   const status = document.getElementById("loginStatus");
   if (!status) return;
@@ -548,6 +593,34 @@ function renderLogin() {
     return;
   }
   setStatus(status, `Logged in as ${state.user.email}`);
+}
+
+function renderAuthGate() {
+  const profileCard = document.querySelector(".profile-card");
+  const profileForm = document.getElementById("profileForm");
+  const locked = document.getElementById("profileLocked");
+  const editButton = document.getElementById("editProfile");
+  const title = document.getElementById("profileCardTitle");
+  const copy = document.getElementById("profileCardCopy");
+  const gatedCards = [document.querySelector(".group-card"), document.querySelector(".find-card"), document.querySelector(".requests-card")];
+  const isLoggedIn = Boolean(state.user);
+  const hasProfile = Boolean(state.profile);
+  const showForm = isLoggedIn && (!hasProfile || editingProfile);
+
+  profileCard?.classList.toggle("locked", !isLoggedIn);
+  if (locked) locked.style.display = isLoggedIn ? "none" : "grid";
+  if (profileForm) profileForm.classList.toggle("is-saved", !showForm);
+  if (editButton) editButton.style.display = isLoggedIn && hasProfile && !editingProfile ? "block" : "none";
+  gatedCards.forEach((card) => card?.classList.toggle("locked", !isLoggedIn || !hasProfile));
+
+  if (title) title.textContent = !isLoggedIn ? "Login first" : hasProfile && !editingProfile ? "Your profile" : hasProfile ? "Edit profile" : "Create profile";
+  if (copy) {
+    copy.textContent = !isLoggedIn
+      ? "Sign up or login first, then create your profile."
+      : hasProfile && !editingProfile
+        ? "Profile saved. You can edit it anytime and refresh group recommendations."
+        : "Build identity once. CrossRoads suggests or creates likely circles from your past.";
+  }
 }
 
 function renderProfile() {
@@ -726,6 +799,7 @@ function renderRequests() {
 
 function renderApp() {
   renderDropdownData();
+  renderAuthGate();
   renderProfileWizard();
   renderLogin();
   renderProfile();
@@ -770,7 +844,15 @@ document.getElementById("loginForm")?.addEventListener("submit", (event) => {
   const otp = document.getElementById("loginOtp").value.trim();
   if (!email || !otp) return;
   state.user = { email };
+  editingProfile = !state.profile;
   saveState();
+  renderApp();
+});
+
+document.getElementById("editProfile")?.addEventListener("click", () => {
+  editingProfile = true;
+  profileStep = 0;
+  prefillProfileForm();
   renderApp();
 });
 
@@ -829,6 +911,8 @@ document.getElementById("profileForm")?.addEventListener("submit", async (event)
     bio: document.getElementById("profileBio").value.trim(),
   };
   upsertProfileGroups(state.profile);
+  editingProfile = false;
+  profileStep = 0;
   saveState();
   renderApp();
 });

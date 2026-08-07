@@ -108,8 +108,12 @@
 
             <section class="flow-card profile-card">
               <div class="step-pill">2</div>
-              <h3>Create profile</h3>
-              <p>Build identity once. CrossRoads suggests or creates likely circles from your past.</p>
+              <h3 id="profileCardTitle">Create profile</h3>
+              <p id="profileCardCopy">Build identity once. CrossRoads suggests or creates likely circles from your past.</p>
+              <div class="locked-panel" id="profileLocked">
+                <strong>Login required</strong>
+                <small>Sign up or login first. Profile creation opens immediately after successful OTP login.</small>
+              </div>
               <form id="profileForm" class="profile-wizard">
                 <div class="wizard-progress" aria-label="Profile stages">
                   <span class="active">Identity</span>
@@ -233,6 +237,7 @@
                   <small>Complete this before joining a group</small>
                 </div>
               </div>
+              <button class="secondary-button edit-profile-button" id="editProfile" type="button">Edit profile</button>
               <div class="recommendation-list" id="recommendationList"></div>
             </section>
 

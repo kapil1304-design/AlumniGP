@@ -553,6 +553,60 @@ select:focus {
   color: #6d4b00;
 }
 
+.locked-panel {
+  display: grid;
+  gap: 4px;
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px dashed rgba(23, 23, 23, 0.22);
+  border-radius: 16px;
+  background: rgba(255, 209, 102, 0.16);
+}
+
+.locked-panel strong {
+  font-size: 18px;
+}
+
+.locked-panel small {
+  color: #6d4b00;
+}
+
+.flow-card.locked .profile-wizard,
+.flow-card.locked .mini-profile,
+.flow-card.locked .edit-profile-button,
+.flow-card.locked .recommendation-list,
+.group-card.locked form,
+.find-card.locked .search-row,
+.find-card.locked .group-results,
+.find-card.locked .reset-button,
+.requests-card.locked .request-list {
+  display: none;
+}
+
+.group-card.locked::after,
+.find-card.locked::after,
+.requests-card.locked::after {
+  content: "Login and save your profile first.";
+  display: block;
+  margin-top: 16px;
+  padding: 14px;
+  border: 1px dashed rgba(23, 23, 23, 0.22);
+  border-radius: 16px;
+  background: rgba(255, 209, 102, 0.16);
+  color: #6d4b00;
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.profile-wizard.is-saved {
+  display: none;
+}
+
+.edit-profile-button {
+  width: 100%;
+  margin-top: 12px;
+}
+
 .mini-profile {
   display: flex;
   align-items: center;
