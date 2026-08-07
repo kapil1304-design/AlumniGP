@@ -314,6 +314,9 @@ function setValue(id, value) {
 function bindPlaceAutocomplete(inputId, targets = {}, options = {}) {
   const input = document.getElementById(inputId);
   if (!input || !window.google?.maps?.places) return;
+  if (input.dataset.placesBound === "true") return;
+  input.dataset.placesBound = "true";
+  input.setAttribute("autocomplete", "off");
 
   const autocomplete = new google.maps.places.Autocomplete(input, {
     fields: ["address_components", "formatted_address", "geometry", "name", "place_id"],
@@ -331,6 +334,13 @@ function bindPlaceAutocomplete(inputId, targets = {}, options = {}) {
 }
 
 function initGooglePlaces() {
+  bindPlaceAutocomplete("profileCountry", {
+    country: "profileCountry",
+  }, { types: ["(regions)"] });
+  bindPlaceAutocomplete("profileState", {
+    state: "profileState",
+    country: "profileCountry",
+  }, { types: ["(regions)"] });
   bindPlaceAutocomplete("profileCity", {
     city: "profileCity",
     state: "profileState",
@@ -342,6 +352,13 @@ function initGooglePlaces() {
     state: "profileState",
     country: "profileCountry",
   });
+  bindPlaceAutocomplete("profileSchoolCountry", {
+    country: "profileSchoolCountry",
+  }, { types: ["(regions)"] });
+  bindPlaceAutocomplete("profileSchoolState", {
+    state: "profileSchoolState",
+    country: "profileSchoolCountry",
+  }, { types: ["(regions)"] });
   bindPlaceAutocomplete("profileSchoolCity", {
     city: "profileSchoolCity",
     state: "profileSchoolState",
@@ -353,6 +370,13 @@ function initGooglePlaces() {
     state: "profileSchoolState",
     country: "profileSchoolCountry",
   });
+  bindPlaceAutocomplete("profileCollegeCountry", {
+    country: "profileCollegeCountry",
+  }, { types: ["(regions)"] });
+  bindPlaceAutocomplete("profileCollegeState", {
+    state: "profileCollegeState",
+    country: "profileCollegeCountry",
+  }, { types: ["(regions)"] });
   bindPlaceAutocomplete("profileCollegeCity", {
     city: "profileCollegeCity",
     state: "profileCollegeState",
@@ -364,6 +388,13 @@ function initGooglePlaces() {
     state: "profileCollegeState",
     country: "profileCollegeCountry",
   });
+  bindPlaceAutocomplete("profileWorkCountry", {
+    country: "profileWorkCountry",
+  }, { types: ["(regions)"] });
+  bindPlaceAutocomplete("profileWorkState", {
+    state: "profileWorkState",
+    country: "profileWorkCountry",
+  }, { types: ["(regions)"] });
   bindPlaceAutocomplete("profileWorkCity", {
     city: "profileWorkCity",
     state: "profileWorkState",
@@ -375,6 +406,13 @@ function initGooglePlaces() {
     state: "profileWorkState",
     country: "profileWorkCountry",
   });
+  bindPlaceAutocomplete("groupCountry", {
+    country: "groupCountry",
+  }, { types: ["(regions)"] });
+  bindPlaceAutocomplete("groupState", {
+    state: "groupState",
+    country: "groupCountry",
+  }, { types: ["(regions)"] });
   bindPlaceAutocomplete("groupCity", {
     city: "groupCity",
     state: "groupState",
