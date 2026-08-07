@@ -1,0 +1,9 @@
+.git
+.env
+Brevo.txt
+Screenshot*.png
+deploy-temp
+preview
+.agents
+.claude
+server*.log
