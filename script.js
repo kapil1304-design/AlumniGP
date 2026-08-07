@@ -842,11 +842,44 @@ document.getElementById("loginForm")?.addEventListener("submit", (event) => {
   event.preventDefault();
   const email = document.getElementById("loginEmail").value.trim();
   const otp = document.getElementById("loginOtp").value.trim();
+  const status = document.getElementById("loginStatus");
   if (!email || !otp) return;
-  state.user = { email };
-  editingProfile = !state.profile;
-  saveState();
-  renderApp();
+  setStatus(status, "Verifying OTP...");
+  fetch("/api/auth/verify-otp", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ email, otp }),
+  })
+    .then(async (response) => {
+      const data = await response.json();
+      if (!response.ok || !data.ok) throw new Error(data.error || "OTP verification failed");
+      state.user = { email: data.email };
+      editingProfile = !state.profile;
+      saveState();
+      renderApp();
+    })
+    .catch((error) => setStatus(status, error.message, true));
+});
+
+document.getElementById("sendOtp")?.addEventListener("click", () => {
+  const email = document.getElementById("loginEmail").value.trim();
+  const status = document.getElementById("loginStatus");
+  if (!email) {
+    setStatus(status, "Enter your email first.", true);
+    return;
+  }
+  setStatus(status, "Sending OTP...");
+  fetch("/api/auth/send-otp", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ email }),
+  })
+    .then(async (response) => {
+      const data = await response.json();
+      if (!response.ok || !data.ok) throw new Error(data.error || "Could not send OTP");
+      setStatus(status, "OTP sent. Check your email.");
+    })
+    .catch((error) => setStatus(status, error.message, true));
 });
 
 document.getElementById("editProfile")?.addEventListener("click", () => {

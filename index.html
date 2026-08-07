@@ -90,18 +90,19 @@
           <div class="flow-grid">
             <section class="flow-card auth-card">
               <div class="step-pill">1</div>
-              <h3>Login</h3>
-              <p>Use any email for this prototype. OTP is simulated.</p>
+              <h3>Login / Sign up</h3>
+              <p>Enter your email, receive an OTP, then verify to continue.</p>
               <form id="loginForm" class="form-stack">
                 <label>
                   Email
                   <input id="loginEmail" type="email" placeholder="you@example.com" required />
                 </label>
+                <button class="secondary-button" id="sendOtp" type="button">Send OTP</button>
                 <label>
                   OTP
                   <input id="loginOtp" type="text" placeholder="123456" maxlength="6" required />
                 </label>
-                <button class="primary-button" type="submit">Login</button>
+                <button class="primary-button" type="submit">Verify & continue</button>
               </form>
               <div class="status-line" id="loginStatus">Not logged in</div>
             </section>
