@@ -6,7 +6,7 @@
     <title>CrossRoads | Alumni & Life Network</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,600..900,60,1&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
@@ -16,45 +16,59 @@
           <span class="brand-mark" aria-hidden="true">
             <span></span><span></span><span></span><span></span>
           </span>
-          <span>CrossRoads</span>
+          <span>AlumniGP</span>
         </a>
         <div class="nav-links">
+          <a href="#batch-finder">Find batch</a>
+          <a href="#map">Cities</a>
+          <a href="#stories">Stories</a>
           <a href="#circles">Circles</a>
           <a href="#trust">Trust</a>
-          <a href="#explore">Explore</a>
         </div>
         <button class="ghost-button" data-scroll-target="app">Open app</button>
       </nav>
 
       <main id="top">
-        <section class="hero">
+        <section class="hero reveal">
           <div class="hero-copy">
             <div class="eyebrow">For people whose paths once crossed</div>
-            <h1>Your old world, alive again.</h1>
+            <h1>The people who knew you then, beside you now.</h1>
             <p>
               Reconnect with classmates, batchmates, colleagues, and forgotten allies.
               Find help, build teams, create opportunities, and stay close through every phase of life.
             </p>
             <div class="hero-actions">
               <button class="primary-button" data-scroll-target="app">Start your circle</button>
-              <button class="secondary-button" data-scroll-target="circles">Explore the idea</button>
+              <button class="secondary-button" data-scroll-target="batch-finder">Find your batch</button>
             </div>
-            <div class="name-strip" aria-label="Name ideas">
-              <span>CrossRoads</span>
-              <span>Again</span>
-              <span>PastLink</span>
-              <span>TribeTrail</span>
+            <div class="hero-stats" aria-label="Community preview statistics">
+              <div><strong data-count="12000">0</strong><span>alumni mapped</span></div>
+              <div><strong data-count="40">0</strong><span>cities linked</span></div>
+              <div><strong data-count="1995">0</strong><span>oldest batch</span></div>
+            </div>
+            <div class="name-strip" aria-label="Core promise">
+              <span>Batchmates</span>
+              <span>School friends</span>
+              <span>College seniors</span>
+              <span>Work allies</span>
             </div>
           </div>
 
           <div class="hero-visual" aria-label="Animated alumni network preview">
             <canvas id="networkCanvas" width="760" height="620">Animated preview of connected alumni circles.</canvas>
+            <div class="portrait-cloud" aria-hidden="true">
+              <span class="portrait p1">KS</span>
+              <span class="portrait p2">NR</span>
+              <span class="portrait p3">AZ</span>
+              <span class="portrait p4">MK</span>
+              <span class="portrait p5">DS</span>
+            </div>
             <div class="phone-card">
               <div class="phone-top">
                 <span class="avatar a1"></span>
                 <div>
-                  <strong>IIT Bombay 2018</strong>
-                  <small>42 verified members active</small>
+                  <strong>Model School Rohtak</strong>
+                  <small>1985-1995 overlap discovered</small>
                 </div>
               </div>
               <div class="pulse-list">
@@ -77,7 +91,89 @@
           <span>Friendship</span>
         </section>
 
-        <section class="prototype-app" id="app" aria-label="CrossRoads app prototype">
+        <section class="batch-finder reveal" id="batch-finder" aria-label="Find your batch preview">
+          <div class="section-kicker">Find your doorway back</div>
+          <div class="section-heading">
+            <h2>Search by city, decade, school, college, or company.</h2>
+            <p>Built for messy real lives: people leave after Class 7, change cities, skip college, start work early, and still belong to the same story.</p>
+          </div>
+          <div class="filter-row" role="list" aria-label="Batch filters">
+            <button class="filter-chip active" data-batch-filter="all" type="button">All</button>
+            <button class="filter-chip" data-batch-filter="school" type="button">School</button>
+            <button class="filter-chip" data-batch-filter="college" type="button">College</button>
+            <button class="filter-chip" data-batch-filter="work" type="button">Work</button>
+          </div>
+          <div class="spotlight-grid" id="stories">
+            <article class="spotlight-card" data-batch-kind="school">
+              <div class="spotlight-photo photo-one"></div>
+              <div class="spotlight-copy">
+                <span>School overlap</span>
+                <strong>Kapil, Class 7 in 1985</strong>
+                <p>Can meet classmates who left in Class 8 and those who passed Class 12 later, through one common branch circle.</p>
+              </div>
+            </article>
+            <article class="spotlight-card" data-batch-kind="college">
+              <div class="spotlight-photo photo-two"></div>
+              <div class="spotlight-copy">
+                <span>College batch</span>
+                <strong>Nisha, B.Tech 2018</strong>
+                <p>Finds seniors, juniors, city groups, founders, and mentors without losing the original batch context.</p>
+              </div>
+            </article>
+            <article class="spotlight-card" data-batch-kind="work">
+              <div class="spotlight-photo photo-three"></div>
+              <div class="spotlight-copy">
+                <span>Workplace circle</span>
+                <strong>Dev, Infosys Pune 2019</strong>
+                <p>Rebuilds professional trust through old teams, project friends, and verified referrals.</p>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="city-map-section reveal" id="map" aria-label="Alumni city cluster visual">
+          <div class="map-copy">
+            <div class="section-kicker">The emotional map</div>
+            <h2>Every city becomes a memory cluster.</h2>
+            <p>AlumniGP should make geography feel alive: Rohtak to Delhi, Patna to Pune, Mumbai to Toronto, school branch to global chapter.</p>
+            <div class="decade-rail" aria-label="Decade timeline">
+              <span>1970s</span><span>1980s</span><span>1990s</span><span>2000s</span><span>2010s</span><span>2020s</span>
+            </div>
+          </div>
+          <div class="cluster-map" aria-hidden="true">
+            <span class="city-node delhi"><strong>Delhi</strong><small>2,420</small></span>
+            <span class="city-node mumbai"><strong>Mumbai</strong><small>1,880</small></span>
+            <span class="city-node pune"><strong>Pune</strong><small>930</small></span>
+            <span class="city-node toronto"><strong>Toronto</strong><small>310</small></span>
+            <span class="city-node dubai"><strong>Dubai</strong><small>640</small></span>
+            <span class="map-line one"></span>
+            <span class="map-line two"></span>
+            <span class="map-line three"></span>
+          </div>
+        </section>
+
+        <section class="nostalgia reveal" aria-label="Then and now community story">
+          <div class="then-now">
+            <div class="memory-frame old">
+              <span>Then</span>
+              <strong>Class photo, annual day, bus stop, canteen table.</strong>
+            </div>
+            <div class="memory-frame now">
+              <span>Now</span>
+              <strong>Jobs, ventures, care calls, reunions, second chances.</strong>
+            </div>
+          </div>
+          <div class="testimonial-panel">
+            <div class="section-kicker">Voices</div>
+            <div class="testimonial-track" id="testimonialTrack">
+              <blockquote class="testimonial active">"I did not need a public social network. I needed the old room to open again."</blockquote>
+              <blockquote class="testimonial">"A school friend helped my daughter find her first internship."</blockquote>
+              <blockquote class="testimonial">"The batch circle became a business circle without losing warmth."</blockquote>
+            </div>
+          </div>
+        </section>
+
+        <section class="prototype-app reveal" id="app" aria-label="CrossRoads app prototype">
           <div class="app-intro">
             <span class="eyebrow">Clickable prototype</span>
             <h2>Enter, build your profile, find your people.</h2>

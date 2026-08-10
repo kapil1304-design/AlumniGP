@@ -838,6 +838,72 @@ document.querySelectorAll("[data-scroll-target]").forEach((button) => {
   });
 });
 
+function animateCount(el) {
+  const target = Number(el.dataset.count || 0);
+  const start = performance.now();
+  const duration = 1300;
+  const formatter = new Intl.NumberFormat("en-IN");
+
+  function tick(now) {
+    const progress = Math.min((now - start) / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    const value = formatter.format(Math.round(target * eased));
+    el.textContent = target >= 1900 && target <= 2100 ? value : `${value}+`;
+    if (progress < 1) requestAnimationFrame(tick);
+  }
+
+  requestAnimationFrame(tick);
+}
+
+const revealObserver = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add("is-visible");
+      entry.target.querySelectorAll("[data-count]").forEach((counter) => {
+        if (counter.dataset.counted) return;
+        counter.dataset.counted = "true";
+        animateCount(counter);
+      });
+      revealObserver.unobserve(entry.target);
+    });
+  },
+  { threshold: 0.16 }
+);
+
+document.querySelectorAll(".reveal").forEach((section) => revealObserver.observe(section));
+
+document.querySelectorAll("[data-batch-filter]").forEach((button) => {
+  button.addEventListener("click", () => {
+    const filter = button.dataset.batchFilter;
+    document.querySelectorAll("[data-batch-filter]").forEach((item) => item.classList.toggle("active", item === button));
+    document.querySelectorAll("[data-batch-kind]").forEach((card) => {
+      card.classList.toggle("is-hidden", filter !== "all" && card.dataset.batchKind !== filter);
+    });
+  });
+});
+
+const testimonials = [...document.querySelectorAll(".testimonial")];
+const testimonialTrack = document.getElementById("testimonialTrack");
+let testimonialIndex = 0;
+let testimonialPaused = false;
+
+if (testimonials.length) {
+  testimonialTrack?.addEventListener("mouseenter", () => {
+    testimonialPaused = true;
+  });
+  testimonialTrack?.addEventListener("mouseleave", () => {
+    testimonialPaused = false;
+  });
+
+  setInterval(() => {
+    if (testimonialPaused) return;
+    testimonials[testimonialIndex]?.classList.remove("active");
+    testimonialIndex = (testimonialIndex + 1) % testimonials.length;
+    testimonials[testimonialIndex]?.classList.add("active");
+  }, 3600);
+}
+
 document.getElementById("loginForm")?.addEventListener("submit", (event) => {
   event.preventDefault();
   const email = document.getElementById("loginEmail").value.trim();
