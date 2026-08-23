@@ -202,6 +202,10 @@ function buildSchoolCommunityId(institute, city = "", locality = "") {
   return [institute, "school-community", city, locality].filter(Boolean).map(slugify).join("-");
 }
 
+function classYearLabel(className, year) {
+  return [className, year].filter(Boolean).join(" ");
+}
+
 function groupTitle(group) {
   const place = [group.locality, group.city].filter(Boolean).join(", ");
   return `${group.institute}${place ? `, ${place}` : ""} · ${group.batch}`;
@@ -217,6 +221,7 @@ function schoolAttendanceLabel(profile) {
 }
 
 function buildAffiliations(profile) {
+  const schoolClassYear = classYearLabel(profile.schoolToClass || profile.schoolFromClass, profile.schoolToYear || profile.schoolFromYear);
   const affiliations = [
     {
       type: "School",
@@ -232,6 +237,28 @@ function buildAffiliations(profile) {
       toClass: profile.schoolToClass,
       toYear: profile.schoolToYear,
       signal: `${schoolAttendanceLabel(profile)} · common school group${profile.bestFriend ? ` · friend signal: ${profile.bestFriend}` : ""}`,
+    },
+    {
+      type: "School",
+      institute: profile.school,
+      batch: schoolClassYear ? `${schoolClassYear}${profile.schoolSection ? ` · Section ${profile.schoolSection}` : ""}` : "",
+      city: profile.schoolCity,
+      locality: profile.schoolLocality,
+      state: profile.schoolState,
+      country: profile.schoolCountry,
+      sectionGroup: true,
+      signal: `Class/section match${profile.schoolSection ? ` · Section ${profile.schoolSection}` : ""}`,
+    },
+    {
+      type: "School",
+      institute: profile.school,
+      batch: profile.schoolHouse ? `${profile.schoolHouse} group` : "",
+      city: profile.schoolCity,
+      locality: profile.schoolLocality,
+      state: profile.schoolState,
+      country: profile.schoolCountry,
+      houseGroup: true,
+      signal: `School house/group match · ${profile.schoolHouse}`,
     },
     {
       type: "College",
@@ -255,7 +282,7 @@ function buildAffiliations(profile) {
     },
   ];
 
-  return affiliations.filter((item) => item.institute && item.batch);
+  return affiliations.filter((item) => item.institute && item.batch && item.batch.trim());
 }
 
 function getJourneyAdvice(profile) {
@@ -564,6 +591,8 @@ function prefillProfileForm() {
     profileSchoolFromYear: state.profile.schoolFromYear,
     profileSchoolToClass: state.profile.schoolToClass,
     profileSchoolToYear: state.profile.schoolToYear,
+    profileSchoolSection: state.profile.schoolSection,
+    profileSchoolHouse: state.profile.schoolHouse,
     profileSchoolCountry: state.profile.schoolCountry,
     profileSchoolState: state.profile.schoolState,
     profileSchoolCity: state.profile.schoolCity,
@@ -988,6 +1017,8 @@ document.getElementById("profileForm")?.addEventListener("submit", async (event)
     schoolFromYear: document.getElementById("profileSchoolFromYear").value.trim(),
     schoolToClass: document.getElementById("profileSchoolToClass").value.trim(),
     schoolToYear: document.getElementById("profileSchoolToYear").value.trim(),
+    schoolSection: document.getElementById("profileSchoolSection").value.trim(),
+    schoolHouse: document.getElementById("profileSchoolHouse").value.trim(),
     schoolCity: document.getElementById("profileSchoolCity").value.trim(),
     schoolLocality: document.getElementById("profileSchoolLocality").value.trim(),
     schoolState: document.getElementById("profileSchoolState").value.trim(),
