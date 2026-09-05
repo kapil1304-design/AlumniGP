@@ -324,6 +324,8 @@ function parseAddressComponents(place) {
     lat: "",
     lng: "",
   };
+  const cityFallbacks = [];
+  const localityFallbacks = [];
 
   if (place.geometry?.location) {
     parts.lat = place.geometry.location.lat();
@@ -332,11 +334,21 @@ function parseAddressComponents(place) {
 
   (place.address_components || []).forEach((component) => {
     const types = component.types || [];
-    if (types.includes("sublocality") || types.includes("sublocality_level_1") || types.includes("neighborhood")) {
-      parts.locality = parts.locality || component.long_name;
+    if (
+      types.includes("sublocality") ||
+      types.includes("sublocality_level_1") ||
+      types.includes("sublocality_level_2") ||
+      types.includes("neighborhood") ||
+      types.includes("route") ||
+      types.includes("premise")
+    ) {
+      localityFallbacks.push(component.long_name);
     }
     if (types.includes("locality") || types.includes("postal_town")) {
       parts.city = component.long_name;
+    }
+    if (types.includes("administrative_area_level_3") || types.includes("administrative_area_level_2")) {
+      cityFallbacks.push(component.long_name);
     }
     if (types.includes("administrative_area_level_1")) {
       parts.state = component.long_name;
@@ -348,6 +360,9 @@ function parseAddressComponents(place) {
       parts.postalCode = component.long_name;
     }
   });
+
+  parts.city = parts.city || cityFallbacks[0] || "";
+  parts.locality = localityFallbacks[0] || place.name || "";
 
   return parts;
 }
@@ -364,15 +379,18 @@ function bindPlaceAutocomplete(inputId, targets = {}, options = {}) {
   input.dataset.placesBound = "true";
   input.setAttribute("autocomplete", "off");
 
-  const autocomplete = new google.maps.places.Autocomplete(input, {
+  const autocompleteOptions = {
     fields: ["address_components", "formatted_address", "geometry", "name", "place_id"],
-    types: options.types || ["geocode"],
-  });
+  };
+  if (options.types) autocompleteOptions.types = options.types;
+
+  const autocomplete = new google.maps.places.Autocomplete(input, autocompleteOptions);
 
   autocomplete.addListener("place_changed", () => {
     const place = autocomplete.getPlace();
     const parts = parseAddressComponents(place);
-    setValue(targets.locality, parts.locality || place.name);
+    setValue(targets.name, place.name);
+    setValue(targets.locality, parts.locality);
     setValue(targets.city, parts.city);
     setValue(targets.state, parts.state);
     setValue(targets.country, parts.country);
@@ -398,19 +416,7 @@ function initGooglePlaces() {
     state: "profileState",
     country: "profileCountry",
   });
-  bindPlaceAutocomplete("profileSchoolCountry", {
-    country: "profileSchoolCountry",
-  }, { types: ["(regions)"] });
-  bindPlaceAutocomplete("profileSchoolState", {
-    state: "profileSchoolState",
-    country: "profileSchoolCountry",
-  }, { types: ["(regions)"] });
-  bindPlaceAutocomplete("profileSchoolCity", {
-    city: "profileSchoolCity",
-    state: "profileSchoolState",
-    country: "profileSchoolCountry",
-  }, { types: ["(cities)"] });
-  bindPlaceAutocomplete("profileSchoolLocality", {
+  bindPlaceAutocomplete("profileSchoolPlace", {
     locality: "profileSchoolLocality",
     city: "profileSchoolCity",
     state: "profileSchoolState",
@@ -593,6 +599,7 @@ function prefillProfileForm() {
     profileSchoolToYear: state.profile.schoolToYear,
     profileSchoolSection: state.profile.schoolSection,
     profileSchoolHouse: state.profile.schoolHouse,
+    profileSchoolPlace: state.profile.schoolPlace,
     profileSchoolCountry: state.profile.schoolCountry,
     profileSchoolState: state.profile.schoolState,
     profileSchoolCity: state.profile.schoolCity,
@@ -1019,6 +1026,7 @@ document.getElementById("profileForm")?.addEventListener("submit", async (event)
     schoolToYear: document.getElementById("profileSchoolToYear").value.trim(),
     schoolSection: document.getElementById("profileSchoolSection").value.trim(),
     schoolHouse: document.getElementById("profileSchoolHouse").value.trim(),
+    schoolPlace: document.getElementById("profileSchoolPlace").value.trim(),
     schoolCity: document.getElementById("profileSchoolCity").value.trim(),
     schoolLocality: document.getElementById("profileSchoolLocality").value.trim(),
     schoolState: document.getElementById("profileSchoolState").value.trim(),
