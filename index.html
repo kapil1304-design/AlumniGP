@@ -10,6 +10,14 @@
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
+    <div class="activity-banner" id="activityBanner" data-kind="ready" role="status" aria-live="polite" aria-atomic="true">
+      <span class="activity-indicator" aria-hidden="true"></span>
+      <div>
+        <strong id="activityTitle">Ready</strong>
+        <span id="activityMessage">Choose a function to begin.</span>
+      </div>
+      <time id="activityTime"></time>
+    </div>
     <div class="app-shell">
       <nav class="topbar" aria-label="Primary navigation">
         <a class="brand" href="#top" aria-label="CrossRoads home">

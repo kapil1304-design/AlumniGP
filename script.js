@@ -574,6 +574,18 @@ function setStatus(element, message, isWarning = false) {
   element.classList.toggle("warn", isWarning);
 }
 
+function showActivity(title, message, kind = "ready") {
+  const banner = document.getElementById("activityBanner");
+  const titleElement = document.getElementById("activityTitle");
+  const messageElement = document.getElementById("activityMessage");
+  const timeElement = document.getElementById("activityTime");
+  if (!banner || !titleElement || !messageElement || !timeElement) return;
+  banner.dataset.kind = kind;
+  titleElement.textContent = title;
+  messageElement.textContent = message;
+  timeElement.textContent = new Intl.DateTimeFormat("en", { hour: "2-digit", minute: "2-digit", second: "2-digit" }).format(new Date());
+}
+
 function setFieldValue(id, value = "") {
   const field = document.getElementById(id);
   if (field && field.type !== "file") field.value = value || "";
@@ -945,7 +957,11 @@ document.getElementById("loginForm")?.addEventListener("submit", (event) => {
   const email = document.getElementById("loginEmail").value.trim();
   const otp = document.getElementById("loginOtp").value.trim();
   const status = document.getElementById("loginStatus");
-  if (!email || !otp) return;
+  if (!email || !otp) {
+    showActivity("Login error", "Enter both your email and the six-digit OTP.", "error");
+    return;
+  }
+  showActivity("Verifying login", `Checking the OTP for ${email}...`, "working");
   setStatus(status, "Verifying OTP...");
   fetch("/api/auth/verify-otp", {
     method: "POST",
@@ -959,8 +975,12 @@ document.getElementById("loginForm")?.addEventListener("submit", (event) => {
       editingProfile = !state.profile;
       saveState();
       renderApp();
+      showActivity("Login complete", `Logged in successfully as ${data.email}.`, "success");
     })
-    .catch((error) => setStatus(status, error.message, true));
+    .catch((error) => {
+      setStatus(status, error.message, true);
+      showActivity("Login error", error.message, "error");
+    });
 });
 
 document.getElementById("sendOtp")?.addEventListener("click", () => {
@@ -968,8 +988,10 @@ document.getElementById("sendOtp")?.addEventListener("click", () => {
   const status = document.getElementById("loginStatus");
   if (!email) {
     setStatus(status, "Enter your email first.", true);
+    showActivity("OTP error", "Enter your email before requesting an OTP.", "error");
     return;
   }
+  showActivity("Sending OTP", `Requesting a login code for ${email}...`, "working");
   setStatus(status, "Sending OTP...");
   fetch("/api/auth/send-otp", {
     method: "POST",
@@ -980,8 +1002,12 @@ document.getElementById("sendOtp")?.addEventListener("click", () => {
       const data = await response.json();
       if (!response.ok || !data.ok) throw new Error(data.error || "Could not send OTP");
       setStatus(status, "OTP sent. Check your email.");
+      showActivity("OTP sent", `A login code was sent to ${email}.`, "success");
     })
-    .catch((error) => setStatus(status, error.message, true));
+    .catch((error) => {
+      setStatus(status, error.message, true);
+      showActivity("OTP error", error.message, "error");
+    });
 });
 
 document.getElementById("editProfile")?.addEventListener("click", () => {
@@ -989,22 +1015,29 @@ document.getElementById("editProfile")?.addEventListener("click", () => {
   profileStep = 0;
   prefillProfileForm();
   renderApp();
+  showActivity("Editing profile", "Identity step opened with your saved details.", "working");
 });
 
 document.getElementById("profileNext")?.addEventListener("click", () => {
   const steps = document.querySelectorAll(".wizard-step");
-  if (!canLeaveCurrentProfileStep()) return;
+  if (!canLeaveCurrentProfileStep()) {
+    showActivity("Profile error", "Complete the required fields on this step before continuing.", "error");
+    return;
+  }
   profileStep = Math.min(profileStep + 1, steps.length - 1);
   renderProfileWizard();
+  showActivity("Profile progress", `Opened step ${profileStep + 1} of ${steps.length}.`, "working");
 });
 
 document.getElementById("profileBack")?.addEventListener("click", () => {
   profileStep = Math.max(profileStep - 1, 0);
   renderProfileWizard();
+  showActivity("Profile progress", `Returned to step ${profileStep + 1}.`, "working");
 });
 
 document.getElementById("profileForm")?.addEventListener("submit", async (event) => {
   event.preventDefault();
+  showActivity("Saving profile", "Saving your details and finding matching alumni groups...", "working");
   const currentPhoto = await fileToDataUrl(document.getElementById("profileCurrentPhoto").files[0]);
   const schoolPhoto = await fileToDataUrl(document.getElementById("profileSchoolPhoto").files[0]);
   const collegePhoto = await fileToDataUrl(document.getElementById("profileCollegePhoto").files[0]);
@@ -1053,10 +1086,12 @@ document.getElementById("profileForm")?.addEventListener("submit", async (event)
   profileStep = 0;
   saveState();
   renderApp();
+  showActivity("Profile saved", "Your profile and group recommendations are ready.", "success");
 });
 
 document.getElementById("createGroupForm")?.addEventListener("submit", (event) => {
   event.preventDefault();
+  showActivity("Creating group", "Checking the group details...", "working");
   const institute = document.getElementById("groupInstitute").value.trim();
   const batch = document.getElementById("groupBatch").value.trim();
   const locality = document.getElementById("groupLocality").value.trim();
@@ -1068,12 +1103,14 @@ document.getElementById("createGroupForm")?.addEventListener("submit", (event) =
 
   if (!state.user || !state.profile) {
     setStatus(status, "Login and create your profile before starting a group.", true);
+    showActivity("Group error", "Login and create your profile before starting a group.", "error");
     return;
   }
 
   const id = buildGroupId(institute, batch, city, locality);
   if (state.groups.some((group) => group.id === id)) {
     setStatus(status, "This group already exists. Use Find group to request entry.", true);
+    showActivity("Group error", "This group already exists. Search for it and request entry.", "error");
     return;
   }
 
@@ -1095,18 +1132,25 @@ document.getElementById("createGroupForm")?.addEventListener("submit", (event) =
   event.target.reset();
   setStatus(status, invite ? `Group created. OTP invite is locked to ${invite}.` : "Group created. Invite the second member next.");
   renderApp();
+  showActivity("Group created", invite ? `Group created and invite prepared for ${invite}.` : "Group created successfully.", "success");
 });
 
-document.getElementById("groupSearch")?.addEventListener("input", renderGroups);
+document.getElementById("groupSearch")?.addEventListener("input", (event) => {
+  renderGroups();
+  const query = event.target.value.trim();
+  showActivity("Searching groups", query ? `Showing matches for “${query}”.` : "Showing all available groups.", "working");
+});
 document.getElementById("clearSearch")?.addEventListener("click", () => {
   document.getElementById("groupSearch").value = "";
   renderGroups();
+  showActivity("Search cleared", "Showing all available groups.", "success");
 });
 
 document.getElementById("resetPrototype")?.addEventListener("click", () => {
   localStorage.removeItem(storageKey);
   state = loadState();
   renderApp();
+  showActivity("Demo reset", "Local profile, groups, and requests were reset.", "success");
 });
 
 function handleJoinRequestClick(event) {
@@ -1115,6 +1159,7 @@ function handleJoinRequestClick(event) {
   const group = state.groups.find((item) => item.id === button.dataset.requestGroup);
   if (!group) return;
   if (!state.user || !state.profile) {
+    showActivity("Join request error", "Login and create your profile before requesting entry.", "error");
     alert("Login and create your profile before sending a joining request.");
     return;
   }
@@ -1133,6 +1178,7 @@ function handleJoinRequestClick(event) {
   });
   saveState();
   renderApp();
+  showActivity("Join request sent", `Your request to join ${group.institute} is waiting for ${required} approval${required === 1 ? "" : "s"}.`, "success");
 }
 
 document.getElementById("groupResults")?.addEventListener("click", handleJoinRequestClick);
@@ -1144,9 +1190,9 @@ document.getElementById("requestList")?.addEventListener("click", (event) => {
   const request = state.requests.find((item) => item.groupId === button.dataset.simulateApproval);
   if (!request) return;
   request.approvals += 1;
+  const group = state.groups.find((item) => item.id === request.groupId);
 
   if (request.approvals >= request.required) {
-    const group = state.groups.find((item) => item.id === request.groupId);
     if (group) group.members += 1;
     state.memberships.push(request.groupId);
     state.requests = state.requests.filter((item) => item.groupId !== request.groupId);
@@ -1154,6 +1200,11 @@ document.getElementById("requestList")?.addEventListener("click", (event) => {
 
   saveState();
   renderApp();
+  if (request.approvals >= request.required) {
+    showActivity("Membership approved", `You are now a member of ${group?.institute || "the group"}.`, "success");
+  } else {
+    showActivity("Approval recorded", `${request.approvals} of ${request.required} required approvals received.`, "working");
+  }
 });
 
 renderApp();
